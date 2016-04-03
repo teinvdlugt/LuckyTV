@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LuckyTV</string>
+    <string name="error_snackbar">Gegevens konden niet opgehaald worden</string>
 </resources>

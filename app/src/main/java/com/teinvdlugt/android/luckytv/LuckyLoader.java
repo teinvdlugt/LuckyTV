@@ -12,10 +12,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Loader extends AsyncTaskLoader<List<Entry>> {
+public class LuckyLoader extends AsyncTaskLoader<List<Entry>> {
     public static final String HOME_URL = "http://www.luckymedia.nl/luckytv/";
 
-    public Loader(Context context) {
+    private List<Entry> data;
+
+    public LuckyLoader(Context context) {
         super(context);
     }
 
@@ -34,7 +36,7 @@ public class Loader extends AsyncTaskLoader<List<Entry>> {
                 Element a = postPreview.getElementsByTag("a").first();
                 entry.setUrl(a.attr("href"));
                 entry.setTitle(a.text());
-                Element postDate =  postPreview.getElementsByClass("post-date").first();
+                Element postDate = postPreview.getElementsByClass("post-date").first();
                 entry.setDate(postDate.text());
             }
             entries.add(entry);
@@ -42,5 +44,31 @@ public class Loader extends AsyncTaskLoader<List<Entry>> {
             e.printStackTrace();
         }
         return entries;
+    }
+
+    @Override
+    public void deliverResult(List<Entry> data) {
+        if (isReset()) return;
+        this.data = data;
+        if (isStarted())
+            super.deliverResult(data);
+    }
+
+    @Override
+    protected void onStartLoading() {
+        if (data != null)
+            deliverResult(data);
+        else forceLoad();
+    }
+
+    @Override
+    protected void onStopLoading() {
+        cancelLoad();
+    }
+
+    @Override
+    protected void onReset() {
+        onStopLoading();
+        data = null;
     }
 }
