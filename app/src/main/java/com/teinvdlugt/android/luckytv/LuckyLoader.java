@@ -28,8 +28,8 @@ public class LuckyLoader extends AsyncTaskLoader<List<Entry>> {
             Document doc = Jsoup.connect(HOME_URL + "2016/").get();
             Element div = doc.getElementById("content");
             Elements posts = div.getElementsByClass("post");
-            Entry entry = new Entry();
             for (Element post : posts) {
+                Entry entry = new Entry();
                 Element img = post.getElementsByTag("img").first();
                 entry.setImageUrl(img.attr("src"));
                 Element postPreview = post.getElementsByClass("post-preview").first();
@@ -38,8 +38,8 @@ public class LuckyLoader extends AsyncTaskLoader<List<Entry>> {
                 entry.setTitle(a.text());
                 Element postDate = postPreview.getElementsByClass("post-date").first();
                 entry.setDate(postDate.text());
+                entries.add(entry);
             }
-            entries.add(entry);
         } catch (IOException e) {
             e.printStackTrace();
         }
