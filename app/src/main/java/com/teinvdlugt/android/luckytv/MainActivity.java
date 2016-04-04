@@ -28,7 +28,9 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
 
     private static class EntryList implements Serializable {
         public List<Entry> entries;
-        public int lastLoadedYear;
+        public int yearToLoad;
+        public int pageToLoad;
+        public boolean everythingLoaded;
     }
 
     @Override
@@ -48,19 +50,24 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
             adapter.setData(entryList.entries);
         } else {
             entryList = new EntryList();
-            entryList.lastLoadedYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
-            loadNextYear();
+            entryList.yearToLoad = Calendar.getInstance().get(Calendar.YEAR);
+            entryList.pageToLoad = 1;
         }
     }
 
     @Override
     public void loadNextYear() {
         new AsyncTask<Void, Void, List<Entry>>() {
+            boolean morePagesComing;
+
             @Override
             protected List<Entry> doInBackground(Void... params) {
+                if (entryList.everythingLoaded) return null;
                 List<Entry> entries = new ArrayList<>();
+                String url = HOME_URL + (entryList.yearToLoad) + "/";
+                if (entryList.pageToLoad != 1)
+                    url += "page/" + (entryList.pageToLoad) + "/";
                 try {
-                    String url = HOME_URL + (entryList.lastLoadedYear - 1) + "/";
                     Document doc = Jsoup.connect(url).get();
                     Element div = doc.getElementById("content");
                     Elements posts = div.getElementsByClass("post");
@@ -76,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
                         entry.setDate(postDate.text());
                         entries.add(entry);
                     }
+                    morePagesComing = !doc.getElementsByClass("emm-next").isEmpty();
                     return entries;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -90,10 +98,21 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
                     entryList.entries = entries;
                     adapter.setData(entries);
                 } else {
-                    adapter.addItems(entries);
+                    entryList.entries.addAll(entries);
+                    adapter.notifyItemRangeInserted(adapter.getData().size() - entries.size(), entries.size());
                 }
 
-                entryList.lastLoadedYear--;
+                if (morePagesComing) {
+                    entryList.pageToLoad++;
+                } else {
+                    entryList.yearToLoad--;
+                    entryList.pageToLoad = 1;
+                    if (entryList.yearToLoad == 2000) {
+                        // Videos start at 2001
+                        adapter.setShowProgressBar(false);
+                        entryList.everythingLoaded = true;
+                    }
+                }
             }
         }.execute();
     }

@@ -21,9 +21,14 @@ public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<Entry> data;
     private Context context;
     private LoadNextYearListener loadNextYearListener;
+    private boolean showProgressBar = true;
 
     public interface LoadNextYearListener {
         void loadNextYear();
+    }
+
+    public void setShowProgressBar(boolean showProgressBar) {
+        this.showProgressBar = showProgressBar;
     }
 
     public LuckyAdapter(Context context, LoadNextYearListener loadNextYearListener) {
@@ -32,14 +37,13 @@ public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.loadNextYearListener = loadNextYearListener;
     }
 
+    public List<Entry> getData() {
+        return data;
+    }
+
     public void setData(List<Entry> data) {
         this.data = data;
         notifyDataSetChanged();
-    }
-
-    public void addItems(List<Entry> items) {
-        this.data.addAll(items);
-        notifyItemRangeInserted(data.size() - items.size(), items.size());
     }
 
     @Override
@@ -56,7 +60,10 @@ public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (holder instanceof EntryViewHolder) {
             ((EntryViewHolder) holder).bind(data.get(position));
         } else if (holder instanceof ProgressBarViewHolder) {
-            if (loadNextYearListener != null) loadNextYearListener.loadNextYear();
+            if (showProgressBar) {
+                if (loadNextYearListener != null) loadNextYearListener.loadNextYear();
+            }
+            ((ProgressBarViewHolder) holder).bind(showProgressBar);
         }
     }
 
@@ -105,6 +112,11 @@ public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             super(itemView);
             progressBar = itemView.findViewById(R.id.progress_bar);
             textView = itemView.findViewById(R.id.thatWasIt_textView);
+        }
+
+        public void bind(boolean showProgressBar) {
+            progressBar.setVisibility(showProgressBar ? View.VISIBLE : View.INVISIBLE);
+            textView.setVisibility(showProgressBar ? View.INVISIBLE : View.VISIBLE);
         }
     }
 }
