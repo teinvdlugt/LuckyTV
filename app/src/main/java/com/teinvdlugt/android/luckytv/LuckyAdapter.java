@@ -38,6 +38,11 @@ public class LuckyAdapter extends RecyclerView.Adapter<LuckyAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    public void addItems(List<Entry> items) {
+        this.data.addAll(items);
+        notifyItemRangeInserted(data.size() - items.size(), items.size());
+    }
+
     @Override
     public LuckyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item, parent, false));
