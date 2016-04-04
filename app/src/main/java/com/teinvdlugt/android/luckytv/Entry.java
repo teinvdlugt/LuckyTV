@@ -1,15 +1,11 @@
 package com.teinvdlugt.android.luckytv;
 
-public class Entry {
-    private String title, url, imageUrl, date;
+import java.io.Serializable;
+
+public class Entry implements Serializable {
+    private String title, url, imageUrl, date, videoUrl;
 
     public Entry() {}
-
-    public Entry(String title, String url, String imageUrl, String date) {
-        this.title = title;
-        this.url = url;
-        this.imageUrl = imageUrl;
-    }
 
     public String getTitle() {
         return title;
@@ -41,5 +37,13 @@ public class Entry {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 }

@@ -1,6 +1,7 @@
 package com.teinvdlugt.android.luckytv;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,15 +56,25 @@ public class LuckyAdapter extends RecyclerView.Adapter<LuckyAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView titleTV, dateTV;
         private ImageView imageView;
+        private Entry entry;
 
         public ViewHolder(View itemView) {
             super(itemView);
             titleTV = (TextView) itemView.findViewById(R.id.title);
             dateTV = (TextView) itemView.findViewById(R.id.date);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, VideoActivity.class)
+                            .putExtra(VideoActivity.ENTRY_EXTRA, entry));
+                }
+            });
         }
 
         public void bind(Entry data) {
+            this.entry = data;
             titleTV.setText(data.getTitle());
             dateTV.setText(data.getDate());
             Picasso.with(context).load(data.getImageUrl()).into(imageView);

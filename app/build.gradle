@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.teinvdlugt.android.luckytv"
-        minSdkVersion 9
+        minSdkVersion 10
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -26,4 +26,5 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'org.jsoup:jsoup:1.8.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.devbrackets.android:exomedia:2.5.6'
 }
