@@ -64,7 +64,7 @@ public class LuckyAdapter extends RecyclerView.Adapter<LuckyAdapter.ViewHolder> 
             dateTV = (TextView) itemView.findViewById(R.id.date);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
 
-            imageView.setOnClickListener(new View.OnClickListener() {
+            itemView.findViewById(R.id.root).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     context.startActivity(new Intent(context, VideoActivity.class)
