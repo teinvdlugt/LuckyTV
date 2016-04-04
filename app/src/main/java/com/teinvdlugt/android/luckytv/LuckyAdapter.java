@@ -14,23 +14,22 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LuckyAdapter extends RecyclerView.Adapter<LuckyAdapter.ViewHolder> {
+public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static final int VIEW_TYPE_ENTRY = 0;
+    public static final int VIEW_TYPE_PROGRESS_BAR = 1;
 
     private List<Entry> data;
     private Context context;
+    private LoadNextYearListener loadNextYearListener;
 
-    public LuckyAdapter(Context context, List<Entry> data) {
-        this.context = context;
-        this.data = data;
+    public interface LoadNextYearListener {
+        void loadNextYear();
     }
 
-    public LuckyAdapter(Context context) {
+    public LuckyAdapter(Context context, LoadNextYearListener loadNextYearListener) {
         this.context = context;
         this.data = new ArrayList<>();
-    }
-
-    public List<Entry> getData() {
-        return data;
+        this.loadNextYearListener = loadNextYearListener;
     }
 
     public void setData(List<Entry> data) {
@@ -44,26 +43,39 @@ public class LuckyAdapter extends RecyclerView.Adapter<LuckyAdapter.ViewHolder> 
     }
 
     @Override
-    public LuckyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item, parent, false));
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_ENTRY) {
+            return new EntryViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item, parent, false));
+        } else if (viewType == VIEW_TYPE_PROGRESS_BAR) {
+            return new ProgressBarViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_progress_bar, parent, false));
+        } else return null;
     }
 
     @Override
-    public void onBindViewHolder(LuckyAdapter.ViewHolder holder, int position) {
-        holder.bind(data.get(position));
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof EntryViewHolder) {
+            ((EntryViewHolder) holder).bind(data.get(position));
+        } else if (holder instanceof ProgressBarViewHolder) {
+            if (loadNextYearListener != null) loadNextYearListener.loadNextYear();
+        }
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data.size() + 1;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public int getItemViewType(int position) {
+        return position == data.size() ? VIEW_TYPE_PROGRESS_BAR : VIEW_TYPE_ENTRY;
+    }
+
+    class EntryViewHolder extends RecyclerView.ViewHolder {
         private TextView titleTV, dateTV;
         private ImageView imageView;
         private Entry entry;
 
-        public ViewHolder(View itemView) {
+        public EntryViewHolder(View itemView) {
             super(itemView);
             titleTV = (TextView) itemView.findViewById(R.id.title);
             dateTV = (TextView) itemView.findViewById(R.id.date);
@@ -83,6 +95,16 @@ public class LuckyAdapter extends RecyclerView.Adapter<LuckyAdapter.ViewHolder> 
             titleTV.setText(data.getTitle());
             dateTV.setText(data.getDate());
             Picasso.with(context).load(data.getImageUrl()).into(imageView);
+        }
+    }
+
+    static class ProgressBarViewHolder extends RecyclerView.ViewHolder {
+        private View progressBar, textView;
+
+        public ProgressBarViewHolder(View itemView) {
+            super(itemView);
+            progressBar = itemView.findViewById(R.id.progress_bar);
+            textView = itemView.findViewById(R.id.thatWasIt_textView);
         }
     }
 }

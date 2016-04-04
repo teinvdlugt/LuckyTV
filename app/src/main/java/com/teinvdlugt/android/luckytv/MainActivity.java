@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity /*implements LoaderManager.LoaderCallbacks<List<Entry>>*/ {
+public class MainActivity extends AppCompatActivity implements LuckyAdapter.LoadNextYearListener {
     private static final String ENTRY_LIST = "entry_list";
     public static final String HOME_URL = "http://www.luckymedia.nl/luckytv/";
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity /*implements LoaderManager.L
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new LuckyAdapter(this);
+        adapter = new LuckyAdapter(this, this);
         recyclerView.setAdapter(adapter);
 
         if (savedInstanceState != null)
@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity /*implements LoaderManager.L
         }
     }
 
-    private void loadNextYear() {
+    @Override
+    public void loadNextYear() {
         new AsyncTask<Void, Void, List<Entry>>() {
             @Override
             protected List<Entry> doInBackground(Void... params) {
