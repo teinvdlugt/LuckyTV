@@ -11,15 +11,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
+public abstract class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
     public static final String HOME_URL = "http://www.luckymedia.nl/luckytv/";
 
-    private LuckyAdapter adapter;
     private EntryList entryList;
+    private String url;
 
-    public EntryLoadTask(LuckyAdapter adapter, EntryList entryList) {
-        this.adapter = adapter;
+    public EntryLoadTask(EntryList entryList, String url) {
         this.entryList = entryList;
+        this.url = url;
     }
 
     private boolean morePagesComing;
@@ -28,7 +28,6 @@ public class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
     protected List<Entry> doInBackground(Void... params) {
         if (entryList.everythingLoaded) return null;
         List<Entry> entries = new ArrayList<>();
-        String url = HOME_URL + (entryList.yearToLoad) + "/";
         if (entryList.pageToLoad != 1)
             url += "page/" + (entryList.pageToLoad) + "/";
         try {
@@ -60,23 +59,19 @@ public class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
         if (entries == null) return;
         if (entryList.entries == null) {
             entryList.entries = entries;
-            adapter.setData(entries);
         } else {
             entryList.entries.addAll(entries);
-            adapter.notifyItemRangeInserted(adapter.getData().size() - entries.size(), entries.size());
         }
+        newEntries(entries.size());
 
         if (morePagesComing) {
             entryList.pageToLoad++;
         } else {
-            entryList.yearToLoad--;
-            entryList.pageToLoad = 1;
-            if (entryList.yearToLoad == 2000) {
-                // Videos start at 2001
-                adapter.setShowProgressBar(false);
-                entryList.everythingLoaded = true;
-            }
+            lastPageLoaded();
         }
     }
 
+    public abstract void newEntries(int amount);
+
+    public abstract void lastPageLoaded();
 }

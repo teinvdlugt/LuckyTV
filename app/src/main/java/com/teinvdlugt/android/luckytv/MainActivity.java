@@ -39,7 +39,28 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
 
     @Override
     public void loadNextYear() {
-        new EntryLoadTask(adapter, entryList).execute();
+        new EntryLoadTask(entryList, EntryLoadTask.HOME_URL + entryList.yearToLoad + "/") {
+            @Override
+            public void newEntries(int amount) {
+                if (adapter.getData() == null || !adapter.getData().equals(entryList.entries)) {
+                    adapter.setData(entryList.entries);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    adapter.notifyItemRangeInserted(adapter.getData().size() - amount, amount);
+                }
+            }
+
+            @Override
+            public void lastPageLoaded() {
+                entryList.yearToLoad--;
+                entryList.pageToLoad = 1;
+                if (entryList.yearToLoad == 2000) {
+                    // Videos start at 2001
+                    adapter.setShowProgressBar(false);
+                    entryList.everythingLoaded = true;
+                }
+            }
+        }.execute();
     }
 
     @Override
