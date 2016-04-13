@@ -1,16 +1,23 @@
 package com.teinvdlugt.android.luckytv;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.MenuItem;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements LuckyAdapter.LoadNextYearListener {
+public class MainActivity extends AppCompatActivity implements LuckyAdapter.LoadNextYearListener, NavigationView.OnNavigationItemSelectedListener {
     private static final String ENTRY_LIST = "entry_list";
 
+    private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
     private LuckyAdapter adapter;
     private EntryList entryList;
@@ -20,6 +27,13 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        NavigationView navView = (NavigationView) findViewById(R.id.navigationView);
+        navView.setNavigationItemSelectedListener(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -67,5 +81,28 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(ENTRY_LIST, entryList);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_tag:
+                startActivity(new Intent(this, TagActivity.class));
+                drawerLayout.closeDrawers();
+                return true;
+            default:
+                return false;
+        }
     }
 }
