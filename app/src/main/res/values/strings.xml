@@ -3,4 +3,5 @@
     <string name="error_snackbar">Gegevens konden niet opgehaald worden</string>
     <string name="that_was_it">Dat was het!</string>
     <string name="tag_ellipsis">Tag…</string>
+    <string name="no_results">Geen resultaten</string>
 </resources>

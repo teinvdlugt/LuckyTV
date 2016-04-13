@@ -51,12 +51,19 @@ public abstract class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        } catch (NullPointerException e) {
+            // No search/tag results
+            morePagesComing = false;
+            return new ArrayList<>();
         }
     }
 
     @Override
     protected void onPostExecute(List<Entry> entries) {
-        if (entries == null) return;
+        if (entries == null || entries.isEmpty()) {
+            noResults();
+            return;
+        }
         if (entryList.entries == null) {
             entryList.entries = entries;
         } else {
@@ -73,6 +80,8 @@ public abstract class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
     }
 
     public abstract void newEntries(int amount);
+
+    public abstract void noResults();
 
     public abstract void lastPageLoaded();
 }

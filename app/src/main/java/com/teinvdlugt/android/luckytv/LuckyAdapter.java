@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -22,6 +23,7 @@ public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private Context context;
     private LoadNextYearListener loadNextYearListener;
     private boolean showProgressBar = true;
+    private int noProgressBarText = R.string.that_was_it;
 
     public interface LoadNextYearListener {
         void loadNextYear();
@@ -51,6 +53,10 @@ public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    public void setNoProgressBarText(int noProgressBarText) {
+        this.noProgressBarText = noProgressBarText;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ENTRY) {
@@ -68,7 +74,7 @@ public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (showProgressBar) {
                 if (loadNextYearListener != null) loadNextYearListener.loadNextYear();
             }
-            ((ProgressBarViewHolder) holder).bind(showProgressBar);
+            ((ProgressBarViewHolder) holder).bind(showProgressBar, noProgressBarText);
         }
     }
 
@@ -111,17 +117,19 @@ public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     static class ProgressBarViewHolder extends RecyclerView.ViewHolder {
-        private View progressBar, textView;
+        private ProgressBar progressBar;
+        private TextView textView;
 
         public ProgressBarViewHolder(View itemView) {
             super(itemView);
-            progressBar = itemView.findViewById(R.id.progress_bar);
-            textView = itemView.findViewById(R.id.thatWasIt_textView);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progress_bar);
+            textView = (TextView) itemView.findViewById(R.id.thatWasIt_textView);
         }
 
-        public void bind(boolean showProgressBar) {
+        public void bind(boolean showProgressBar, int noProgressBarText) {
             progressBar.setVisibility(showProgressBar ? View.VISIBLE : View.INVISIBLE);
             textView.setVisibility(showProgressBar ? View.INVISIBLE : View.VISIBLE);
+            textView.setText(noProgressBarText);
         }
     }
 }

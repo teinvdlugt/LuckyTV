@@ -65,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
             }
 
             @Override
+            public void noResults() {
+
+            }
+
+            @Override
             public void lastPageLoaded() {
                 entryList.yearToLoad--;
                 entryList.pageToLoad = 1;

@@ -65,6 +65,14 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
             }
 
             @Override
+            public void noResults() {
+                adapter.setShowProgressBar(false);
+                adapter.setNoProgressBarText(R.string.no_results);
+                adapter.notifyDataSetChanged();
+                entryList.everythingLoaded = true;
+            }
+
+            @Override
             public void lastPageLoaded() {
                 adapter.setShowProgressBar(false);
                 entryList.everythingLoaded = true;
@@ -86,6 +94,7 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
                 entryList = new EntryList();
                 adapter.clearData();
                 adapter.setShowProgressBar(true);
+                adapter.setNoProgressBarText(R.string.that_was_it);
                 searchView.clearFocus();
                 recyclerView.setVisibility(View.VISIBLE);
                 return true;
