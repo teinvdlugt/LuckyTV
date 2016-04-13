@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
 
 import java.util.Calendar;
@@ -33,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         NavigationView navView = (NavigationView) findViewById(R.id.navigationView);
+        assert navView != null;
         navView.setNavigationItemSelectedListener(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -98,7 +98,8 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_tag:
-                startActivity(new Intent(this, TagActivity.class));
+                startActivity(new Intent(this, TagActivity.class)
+                        .putExtra(TagActivity.OPEN_SEARCH_VIEW, true));
                 drawerLayout.closeDrawers();
                 return true;
             default:

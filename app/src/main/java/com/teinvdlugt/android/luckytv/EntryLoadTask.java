@@ -62,11 +62,12 @@ public abstract class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
         } else {
             entryList.entries.addAll(entries);
         }
-        newEntries(entries.size());
 
         if (morePagesComing) {
             entryList.pageToLoad++;
+            newEntries(entries.size());
         } else {
+            newEntries(entries.size());
             lastPageLoaded();
         }
     }
