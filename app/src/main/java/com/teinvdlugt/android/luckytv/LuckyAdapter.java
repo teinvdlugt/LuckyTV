@@ -2,6 +2,7 @@ package com.teinvdlugt.android.luckytv;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +54,7 @@ public class LuckyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    public void setNoProgressBarText(int noProgressBarText) {
+    public void setNoProgressBarText(@StringRes int noProgressBarText) {
         this.noProgressBarText = noProgressBarText;
     }
 

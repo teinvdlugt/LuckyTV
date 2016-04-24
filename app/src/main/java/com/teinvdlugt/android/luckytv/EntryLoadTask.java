@@ -28,8 +28,6 @@ public abstract class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
     protected List<Entry> doInBackground(Void... params) {
         if (entryList.everythingLoaded) return null;
         List<Entry> entries = new ArrayList<>();
-        if (entryList.pageToLoad != 1)
-            url += "page/" + (entryList.pageToLoad) + "/";
         try {
             Document doc = Jsoup.connect(url).get();
             Element div = doc.getElementById("content");
