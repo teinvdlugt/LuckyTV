@@ -8,8 +8,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.devbrackets.android.exomedia.EMVideoView;
+import com.devbrackets.android.exomedia.listener.ExoPlayerListener;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,28 +25,59 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnPr
     public static final String ENTRY_EXTRA = "entry";
     public static final String VIDEO_POSITION_MS = "video_position";
 
-    /*private SurfaceView surfaceView;
-    private AspectRatioFrameLayout videoFrame;*/
-
     private EMVideoView videoView;
     private Entry entry;
+    private TextView titleTextView, dateTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
 
+        titleTextView = (TextView) findViewById(R.id.titleTextView);
+        dateTextView = (TextView) findViewById(R.id.dateTextView);
         videoView = (EMVideoView) findViewById(R.id.video_view);
         assert videoView != null;
         videoView.setOnPreparedListener(this);
         videoView.setDefaultControlsEnabled(true);
 
+        videoView.addExoPlayerListener(new ExoPlayerListener() {
+            @Override
+            public void onStateChanged(boolean playWhenReady, int playbackState) {}
+
+            @Override
+            public void onError(Exception e) {}
+
+            @Override
+            public void onVideoSizeChanged(int width, int height, int unAppliedRotationDegrees, float pixelWidthHeightRatio) {
+                videoView.getLayoutParams().height = (int) (1. * videoView.getWidth() / width * height);
+                videoView.invalidate();
+                videoView.requestLayout();
+                Log.d("hi", "onVideoSizeChanged: Lol");
+            }
+        });
+
         entry = (Entry) getIntent().getSerializableExtra(ENTRY_EXTRA);
+
+        StringBuilder tags = new StringBuilder("Tags: ");
+        for (String tag : entry.getTags())
+            tags.append(tag).append(", ");
+        Toast.makeText(this, tags, Toast.LENGTH_SHORT).show();
+
         if (entry.getVideoUrl() != null) {
             videoUrlFound();
         } else {
             startAsyncTask();
         }
+
+        displayVideoInfo();
+    }
+
+    private void displayVideoInfo() {
+        if (titleTextView != null && entry.getTitle() != null)
+            titleTextView.setText(entry.getTitle());
+        if (dateTextView != null && entry.getDate() != null)
+            dateTextView.setText(entry.getDate());
     }
 
     private void startAsyncTask() {
@@ -121,4 +155,6 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnPr
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
+    public void onClickShare(View view) {}
 }

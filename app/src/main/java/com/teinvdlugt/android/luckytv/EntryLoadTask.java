@@ -9,7 +9,9 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public abstract class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
     public static final String HOME_URL = "http://www.luckymedia.nl/luckytv/";
@@ -42,6 +44,15 @@ public abstract class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
                 entry.setTitle(a.text());
                 Element postDate = postPreview.getElementsByClass("post-date").first();
                 entry.setDate(postDate.text());
+
+                Set<String> classNames = post.classNames();
+                for (Iterator<String> it = classNames.iterator(); it.hasNext(); )
+                    if (!it.next().startsWith("tag-"))
+                        it.remove();
+                for (String tag : classNames) {
+                    entry.addTag(tag.substring(4, tag.length()));
+                }
+
                 entries.add(entry);
             }
             morePagesComing = !doc.getElementsByClass("emm-next").isEmpty();

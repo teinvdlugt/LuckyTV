@@ -1,9 +1,12 @@
 package com.teinvdlugt.android.luckytv;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Entry implements Serializable {
     private String title, url, imageUrl, date, videoUrl;
+    private List<String> tags = new ArrayList<>();
 
     public Entry() {}
 
@@ -45,5 +48,13 @@ public class Entry implements Serializable {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void addTag(String tag) {
+        tags.add(tag);
     }
 }
