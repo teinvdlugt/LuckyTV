@@ -1,5 +1,7 @@
 package com.teinvdlugt.android.luckytv;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
@@ -15,11 +17,13 @@ import android.view.View;
 public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadNextYearListener {
     private static final String ENTRY_LIST = "entry_list";
     public static final String OPEN_SEARCH_VIEW = "open_search_bar";
+    public static final String TAG_QUERY = "tag";
 
     private RecyclerView recyclerView;
     private LuckyAdapter adapter;
     private EntryList entryList;
     private String url;
+    private String tagExtra;
     private boolean openSearchView;
 
     @SuppressWarnings("ConstantConditions")
@@ -45,6 +49,10 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
         } else {
             entryList = new EntryList();
             recyclerView.setVisibility(View.INVISIBLE);
+            tagExtra = getIntent().getStringExtra(TAG_QUERY);
+            if (tagExtra != null) {
+                searchNewTag(tagExtra);
+            }
         }
 
         recyclerView.setAdapter(adapter);
@@ -86,17 +94,13 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
 
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         searchView.setQueryHint(getString(R.string.tag_ellipsis));
-        searchView.setIconifiedByDefault(false);
+        if (tagExtra == null) searchView.setIconified(false);
+        else searchView.setIconified(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                url = EntryLoadTask.HOME_URL + "tag/" + query + "/";
-                entryList = new EntryList();
-                adapter.clearData();
-                adapter.setShowProgressBar(true);
-                adapter.setNoProgressBarText(R.string.that_was_it);
+                searchNewTag(query);
                 searchView.clearFocus();
-                recyclerView.setVisibility(View.VISIBLE);
                 return true;
             }
 
@@ -106,6 +110,16 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
 
         if (openSearchView) searchView.requestFocus();
         return true;
+    }
+
+    private void searchNewTag(String tag) {
+        url = EntryLoadTask.HOME_URL + "tag/" + tag + "/";
+        entryList = new EntryList();
+        adapter.clearData();
+        adapter.setShowProgressBar(true);
+        adapter.setNoProgressBarText(R.string.that_was_it);
+        recyclerView.setVisibility(View.VISIBLE);
+        setTitle(tag);
     }
 
     @Override
@@ -123,5 +137,10 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(ENTRY_LIST, entryList);
+    }
+
+    public static void openActivityUsingTag(Context context, String tag) {
+        context.startActivity(new Intent(context, TagActivity.class)
+                .putExtra(TAG_QUERY, tag));
     }
 }

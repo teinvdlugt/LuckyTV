@@ -87,7 +87,7 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnPr
                 tagView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(VideoActivity.this, "Clicked tag \"" + tag + "\"", Toast.LENGTH_SHORT).show();
+                        TagActivity.openActivityUsingTag(VideoActivity.this, tag);
                     }
                 });
                 tagLayout.addView(tagView);
