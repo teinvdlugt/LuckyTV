@@ -28,6 +28,7 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnPr
     private EMVideoView videoView;
     private Entry entry;
     private TextView titleTextView, dateTextView;
+    private TagLayout tagLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnPr
 
         titleTextView = (TextView) findViewById(R.id.titleTextView);
         dateTextView = (TextView) findViewById(R.id.dateTextView);
+        tagLayout = (TagLayout) findViewById(R.id.tagLayout);
         videoView = (EMVideoView) findViewById(R.id.video_view);
         assert videoView != null;
         videoView.setOnPreparedListener(this);
@@ -78,6 +80,18 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnPr
             titleTextView.setText(entry.getTitle());
         if (dateTextView != null && entry.getDate() != null)
             dateTextView.setText(entry.getDate());
+        if (tagLayout != null && entry.getTags() != null)
+            for (final String tag : entry.getTags()) {
+                View tagView = getLayoutInflater().inflate(R.layout.tag, null, false);
+                ((TextView) tagView.findViewById(R.id.tagTextView)).setText(tag);
+                tagView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(VideoActivity.this, "Clicked tag \"" + tag + "\"", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                tagLayout.addView(tagView);
+            }
     }
 
     private void startAsyncTask() {
@@ -146,14 +160,14 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnPr
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
+        /*if (hasFocus && Build.VERSION.SDK_INT >= 19) {
             videoView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
+        }*/
     }
 
     public void onClickShare(View view) {}

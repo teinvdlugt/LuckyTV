@@ -14,37 +14,49 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/titleTextView"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/titleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:textAppearanceLarge"
+                    tools:text="Fantastisch geprobeerd" />
+
+                <TextView
+                    android:id="@+id/dateTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Donderdag 28 april 2016" />
+            </LinearLayout>
+
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceLarge"
-                tools:text="Fantastisch geprobeerd" />
-
-            <TextView
-                android:id="@+id/dateTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Donderdag 28 april 2016" />
+                android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/xs_share"
+                android:onClick="onClickShare"
+                android:padding="16dp"
+                app:srcCompat="@drawable/ic_share_black_24dp" />
         </LinearLayout>
 
-        <ImageButton
-            android:layout_width="wrap_content"
+        <com.teinvdlugt.android.luckytv.TagLayout
+            android:id="@+id/tagLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="?selectableItemBackgroundBorderless"
-            android:contentDescription="@string/xs_share"
-            android:onClick="onClickShare"
-            android:padding="16dp"
-            app:srcCompat="@drawable/ic_share_black_24dp" />
+            android:padding="16dp" />
     </LinearLayout>
 </LinearLayout>
