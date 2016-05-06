@@ -25,8 +25,8 @@ public class TagLayout extends ViewGroup {
 
         final int left = this.getPaddingLeft();
         final int top = this.getPaddingTop();
-        final int right = this.getMeasuredWidth();
-        final int bottom = this.getMeasuredHeight();
+        final int right = this.getMeasuredWidth() - getPaddingRight();
+        final int bottom = this.getMeasuredHeight() - getPaddingBottom();
         final int width = right - left;
         final int height = bottom - top;
 
@@ -44,7 +44,7 @@ public class TagLayout extends ViewGroup {
             childWidth = child.getMeasuredWidth();
             childHeight = child.getMeasuredHeight();
 
-            if (curLeft + childWidth >= right) {
+            if (curLeft + childWidth > right) {
                 // Go to next line
                 curLeft = left;
                 curTop += maxHeight;
@@ -59,7 +59,7 @@ public class TagLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int maxWidth = MeasureSpec.getSize(widthMeasureSpec);
+        final int maxWidth = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
 
         // The current x position in the current line
         int curLineWidth = 0;
