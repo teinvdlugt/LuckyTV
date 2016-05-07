@@ -2,14 +2,12 @@ package com.teinvdlugt.android.luckytv;
 
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.devbrackets.android.exomedia.EMVideoView;
 import com.devbrackets.android.exomedia.listener.ExoPlayerListener;
@@ -60,12 +58,6 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnPr
         });
 
         entry = (Entry) getIntent().getSerializableExtra(ENTRY_EXTRA);
-
-        StringBuilder tags = new StringBuilder("Tags: ");
-        for (String tag : entry.getTags())
-            tags.append(tag).append(", ");
-        Toast.makeText(this, tags, Toast.LENGTH_SHORT).show();
-
         if (entry.getVideoUrl() != null) {
             videoUrlFound();
         } else {

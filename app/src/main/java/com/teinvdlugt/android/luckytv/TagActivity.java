@@ -22,8 +22,7 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
     private RecyclerView recyclerView;
     private LuckyAdapter adapter;
     private EntryList entryList;
-    private String url;
-    private String tagExtra;
+    private String tag;
     private boolean openSearchView;
 
     @SuppressWarnings("ConstantConditions")
@@ -49,7 +48,7 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
         } else {
             entryList = new EntryList();
             recyclerView.setVisibility(View.INVISIBLE);
-            tagExtra = getIntent().getStringExtra(TAG_QUERY);
+            String tagExtra = getIntent().getStringExtra(TAG_QUERY);
             if (tagExtra != null) {
                 searchNewTag(tagExtra);
             }
@@ -60,7 +59,10 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
 
     @Override
     public void loadNextYear() {
-        if (url == null) return;
+        String url = EntryLoadTask.HOME_URL + "tag/" + tag + "/";
+        if (entryList.pageToLoad > 1)
+            url += "page/" + entryList.pageToLoad + "/";
+
         new EntryLoadTask(entryList, url) {
             @Override
             public void newEntries(int amount) {
@@ -94,7 +96,7 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
 
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         searchView.setQueryHint(getString(R.string.tag_ellipsis));
-        if (tagExtra == null) searchView.setIconified(false);
+        if (tag == null) searchView.setIconified(false);
         else searchView.setIconified(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -113,7 +115,7 @@ public class TagActivity extends AppCompatActivity implements LuckyAdapter.LoadN
     }
 
     private void searchNewTag(String tag) {
-        url = EntryLoadTask.HOME_URL + "tag/" + tag + "/";
+        this.tag = tag;
         entryList = new EntryList();
         adapter.clearData();
         adapter.setShowProgressBar(true);
