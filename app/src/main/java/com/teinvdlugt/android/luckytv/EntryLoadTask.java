@@ -9,12 +9,10 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public abstract class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
-    public static final String HOME_URL = "http://www.luckymedia.nl/luckytv/";
+    public static final String HOME_URL = "http://www.luckytv.nl/afleveringen/";
 
     private EntryList entryList;
     private String url;
@@ -32,30 +30,24 @@ public abstract class EntryLoadTask extends AsyncTask<Void, Void, List<Entry>> {
         List<Entry> entries = new ArrayList<>();
         try {
             Document doc = Jsoup.connect(url).get();
-            Element div = doc.getElementById("content");
-            Elements posts = div.getElementsByClass("post");
-            for (Element post : posts) {
+            Element itemsDiv = doc.getElementsByClass("items").first();
+            Elements videos = itemsDiv.getElementsByClass("video");
+            for (Element video : videos) {
                 Entry entry = new Entry();
-                Element img = post.getElementsByTag("img").first();
-                entry.setImageUrl(img.attr("src"));
-                Element postPreview = post.getElementsByClass("post-preview").first();
-                Element a = postPreview.getElementsByTag("a").first();
-                entry.setUrl(a.attr("href"));
-                entry.setTitle(a.text());
-                Element postDate = postPreview.getElementsByClass("post-date").first();
-                entry.setDate(postDate.text());
-
-                Set<String> classNames = post.classNames();
-                for (Iterator<String> it = classNames.iterator(); it.hasNext(); )
-                    if (!it.next().startsWith("tag-"))
-                        it.remove();
-                for (String tag : classNames) {
-                    entry.addTag(tag.substring(4, tag.length()));
-                }
+                entry.setImageUrl(video.getElementsByClass(
+                        "video__thumb").attr("src")); // Use attr srcset for higher resolution
+                Element metaDiv = video.getElementsByClass("video__meta").first();
+                Element title = metaDiv.getElementsByClass("video__title").first();
+                entry.setUrl(title.attr("href"));
+                entry.setTitle(title.text());
+                Element date = metaDiv.getElementsByClass("video__date").first();
+                entry.setDate(date.text());
 
                 entries.add(entry);
             }
-            morePagesComing = !doc.getElementsByClass("emm-next").isEmpty();
+            Element paginationDiv = doc.getElementsByClass("pagination").first();
+            Elements nextButton = paginationDiv.getElementsByClass("next");
+            morePagesComing = !nextButton.isEmpty();
             return entries;
         } catch (IOException e) {
             e.printStackTrace();
