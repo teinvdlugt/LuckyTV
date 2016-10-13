@@ -95,13 +95,10 @@ public class VideoActivity extends AppCompatActivity implements MediaPlayer.OnPr
 
                 try {
                     Document doc = Jsoup.connect(url).get();
-                    Elements videoPlayers = doc.getElementsByClass("videoplayer");
-                    for (Element videoPlayer : videoPlayers) {
-                        Element a = videoPlayer.getElementsByTag("a").first();
-                        if (a != null) {
-                            return a.attr("href");
-                        }
-                    }
+                    Element article = doc.getElementsByClass("video--single").first();
+                    Element video = article.getElementsByTag("video").first();
+                    Element source = video.getElementsByTag("source").first();
+                    return source.attr("src");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
