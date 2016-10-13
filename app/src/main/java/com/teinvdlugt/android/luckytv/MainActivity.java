@@ -63,14 +63,14 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
     public void loadNextYear() {
         String url;
         if (entryList.searchQuery == null) {
-            url = EntryLoadTask.HOME_URL + entryList.yearToLoad + "/";
+            url = EntryLoadTask.HOME_URL + "/";
             if (entryList.pageToLoad != 1)
                 url += "page/" + entryList.pageToLoad + "/";
         } else {
             url = EntryLoadTask.HOME_URL;
             if (entryList.pageToLoad != 1)
                 url += "page/" + entryList.pageToLoad + "/";
-            url += "?s=" + entryList.searchQuery;
+            url += "?q=" + entryList.searchQuery;
         }
 
         new EntryLoadTask(entryList, url) {
@@ -94,18 +94,8 @@ public class MainActivity extends AppCompatActivity implements LuckyAdapter.Load
 
             @Override
             public void lastPageLoaded() {
-                if (entryList.searchQuery == null) {
-                    entryList.yearToLoad--;
-                    entryList.pageToLoad = 1;
-                    if (entryList.yearToLoad == 2000) {
-                        // Videos start at 2001
-                        adapter.setShowProgressBar(false);
-                        entryList.everythingLoaded = true;
-                    }
-                } else {
-                    adapter.setShowProgressBar(false);
-                    entryList.everythingLoaded = true;
-                }
+                adapter.setShowProgressBar(false);
+                entryList.everythingLoaded = true;
             }
         }.execute();
     }

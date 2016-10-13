@@ -6,7 +6,6 @@ import java.util.List;
 
 public class EntryList implements Serializable {
     public List<Entry> entries;
-    public int yearToLoad = Calendar.getInstance().get(Calendar.YEAR);
     public int pageToLoad = 1;
     public boolean everythingLoaded;
     public String searchQuery;
